@@ -2,6 +2,7 @@ package com.flameksandr.java.academix.service;
 
 import com.flameksandr.java.academix.dto.UserDTO;
 import com.flameksandr.java.academix.exception.UserNotFoundException;
+import com.flameksandr.java.academix.model.Role;
 import com.flameksandr.java.academix.model.User;
 import com.flameksandr.java.academix.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -29,6 +30,9 @@ public class UserService {
     }
 
     public void registerUser(User user) {
+        if (user.getRole() == null) {
+            user.setRole(Role.STUDENT);  // Например, роль по умолчанию — студент
+        }
         // Шифруем пароль перед сохранением в БД
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
