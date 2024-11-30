@@ -26,6 +26,8 @@
         <lombok.version>1.18.24</lombok.version>
         <spring-boot.version>3.4.0</spring-boot.version>
         <postgres.version>42.7.2</postgres.version>
+        <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
+        <jakarta.validation.version>3.0.2</jakarta.validation.version>
     </properties>
 
     <dependencies>
@@ -55,6 +57,19 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+        </dependency>
+
+        <!-- Зависимость для API валидации (для Jakarta Validation) -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
         </dependency>
 
         <!-- Spring Boot Starter Test: для юнит-тестирования -->
