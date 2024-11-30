@@ -20,6 +20,20 @@ public class UserController {
     }
 
     /**
+     * Регистрирует нового пользователя.
+     * Метод принимает объект User в теле запроса, шифрует его пароль и сохраняет пользователя в базе данных.
+     *
+     * @param user объект пользователя, который нужно зарегистрировать
+     * @return сообщение об успешной регистрации
+     */
+    @PostMapping("/register")
+    public String registerUser(@RequestBody User user) {
+        // Вызов метода для регистрации пользователя
+        userService.registerUser(user);
+        return "User registered successfully!";
+    }
+
+    /**
      * Создание нового пользователя.
      *
      * @param userDTO DTO объекта пользователя.

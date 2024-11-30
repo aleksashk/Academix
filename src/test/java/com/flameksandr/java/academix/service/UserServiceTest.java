@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.mockito.Mockito.*;
@@ -20,6 +21,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @Mock
     private ModelMapper modelMapper;
@@ -34,6 +38,22 @@ class UserServiceTest {
     void setUp() {
         userDTO = new UserDTO(1, "john_doe", "john@example.com", "password123", "John Doe", Role.STUDENT);
         user = new User(1, "john_doe", "john@example.com", "password123", "John Doe", Role.STUDENT, null, null);
+    }
+
+    @Test
+    void shouldRegisterUser() {
+        User user = new User();
+        user.setUsername("john_doe");
+        user.setPassword("password123");
+
+        // Мокаем поведение passwordEncoder
+        when(passwordEncoder.encode(user.getPassword())).thenReturn("encodedPassword123");
+
+        // Вызов метода регистрации
+        userService.registerUser(user);
+
+        // Проверяем, что метод save был вызван с пользователем
+        verify(userRepository).save(user);
     }
 
     @Test

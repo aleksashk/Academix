@@ -28,6 +28,7 @@
         <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
         <mapper.version>3.1.0</mapper.version>
+        <bcrypt.version>6.3.3</bcrypt.version>
     </properties>
 
     <dependencies>
@@ -83,6 +84,14 @@
             <artifactId>jakarta.validation-api</artifactId>
             <version>${jakarta.validation.version}</version> <!-- Использование версии из properties -->
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${bcrypt.version}</version> <!-- Убедитесь, что используете актуальную версию -->
+        </dependency>
+
+
 
         <!-- Spring Boot Starter Test: для юнит-тестирования -->
         <dependency>
