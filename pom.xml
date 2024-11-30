@@ -28,9 +28,16 @@
         <postgres.version>42.7.2</postgres.version>
         <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
+        <mapper.version>3.1.0</mapper.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!-- Spring Boot Starter Data JPA: для работы с базой данных -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,6 +59,13 @@
             <version>${lombok.version}</version> <!-- Использование версии из properties -->
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${mapper.version}</version> <!-- убедитесь, что версия актуальна -->
+        </dependency>
+
 
         <dependency>
             <groupId>org.postgresql</groupId>
