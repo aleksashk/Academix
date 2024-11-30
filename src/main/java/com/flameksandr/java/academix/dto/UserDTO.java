@@ -1,5 +1,6 @@
 package com.flameksandr.java.academix.dto;
 
+import com.flameksandr.java.academix.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -32,6 +33,6 @@ public class UserDTO {
     private String fullName;
 
     @NotBlank(message = "Role cannot be blank")
-    private String role;
+    private Role role;
 }
 

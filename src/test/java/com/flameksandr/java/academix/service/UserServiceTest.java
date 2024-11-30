@@ -32,7 +32,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userDTO = new UserDTO(1, "john_doe", "john@example.com", "password123", "John Doe", "STUDENT");
+        userDTO = new UserDTO(1, "john_doe", "john@example.com", "password123", "John Doe", Role.STUDENT);
         user = new User(1, "john_doe", "john@example.com", "password123", "John Doe", Role.STUDENT, null, null);
     }
 
