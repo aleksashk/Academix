@@ -14,6 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDTO {
 
+    private Integer id;
+
     @NotBlank(message = "Username cannot be blank")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String username;
