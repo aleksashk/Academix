@@ -1,0 +1,21 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+target/
+
+# IDEs
+.idea/
+*.iml
+*.vscode/
+
+# Spring Boot
+*.log
+*.pid
+
+# OS-specific files
+.DS_Store
+Thumbs.db
