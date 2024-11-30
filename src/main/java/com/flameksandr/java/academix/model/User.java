@@ -9,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")  // Если таблица называется "users"
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
