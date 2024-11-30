@@ -5,6 +5,7 @@ import com.flameksandr.java.academix.exception.UserNotFoundException;
 import com.flameksandr.java.academix.model.User;
 import com.flameksandr.java.academix.repository.UserRepository;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -45,6 +47,7 @@ public class UserService {
             throw new IllegalArgumentException("Username already exists");
         }
 
+        log.info("Mapped user with role: {}", user.getRole());
         // Если все проверки прошли, сохраняем пользователя
         return userRepository.save(user);
     }

@@ -30,5 +30,8 @@ public class UserDTO {
 
     @NotBlank(message = "Full name cannot be blank")
     private String fullName;
+
+    @NotBlank(message = "Role cannot be blank")
+    private String role;
 }
 
