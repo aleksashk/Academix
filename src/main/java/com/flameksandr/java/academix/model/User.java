@@ -1,11 +1,13 @@
 package com.flameksandr.java.academix.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,15 +24,23 @@ public class User {
     @Column(name = "id")  // Явно указываем имя столбца
     Integer id;
 
+    @NotNull
+    @Size(min = 3, max = 20)
     @Column(name = "username", unique = true, nullable = false)
     String username;
 
+    @NotNull
+    @Email
     @Column(name = "email", unique = true, nullable = false)
     String email;
 
+    @NotNull
+    @Size(min = 8)
     @Column(name = "password", nullable = false)
     String password;
 
+    @NotNull
+    @Size(min = 3, max = 100)
     @Column(name = "full_name", nullable = false)
     String fullName;
 
@@ -46,4 +56,3 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     LocalDateTime updatedAt;
 }
-
