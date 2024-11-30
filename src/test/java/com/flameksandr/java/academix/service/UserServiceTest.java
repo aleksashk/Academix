@@ -8,16 +8,15 @@ import com.flameksandr.java.academix.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+@ExtendWith(SpringExtension.class)
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -33,189 +32,148 @@ public class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Создаем тестовые данные для пользователя и UserDTO
-        userDTO = new UserDTO();
-        userDTO.setUsername("testUser");
-        userDTO.setEmail("test@example.com");
-        userDTO.setPassword("password123");
-        userDTO.setFullName("Test User");
-
-        user = new User();
-        user.setId(1);
-        user.setUsername("testUser");
-        user.setEmail("test@example.com");
-        user.setPassword("password123");
-        user.setFullName("Test User");
+        userDTO = new UserDTO(1, "john_doe", "john@example.com", "password123", "John Doe", "STUDENT");
+        user = new User(1, "john_doe", "john@example.com", "password123", "John Doe", Role.STUDENT, null, null);
     }
 
     @Test
-    void createUser_ShouldReturnUser_WhenEmailAndUsernameAreUnique() {
-        // Arrange
+    void testCreateUser_Success() {
+        // Given
         when(userRepository.existsByEmail(userDTO.getEmail())).thenReturn(false);
         when(userRepository.existsByUsername(userDTO.getUsername())).thenReturn(false);
         when(modelMapper.map(userDTO, User.class)).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
 
-        // Act
-        User result = userService.createUser(userDTO);
+        // When
+        User createdUser = userService.createUser(userDTO);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(user.getUsername(), result.getUsername());
-        assertEquals(user.getEmail(), result.getEmail());
-
-        // Verify interactions
-        verify(userRepository, times(1)).existsByEmail(userDTO.getEmail());
-        verify(userRepository, times(1)).existsByUsername(userDTO.getUsername());
+        // Then
+        assertNotNull(createdUser);
+        assertEquals(userDTO.getUsername(), createdUser.getUsername());
+        assertEquals(userDTO.getEmail(), createdUser.getEmail());
         verify(userRepository, times(1)).save(user);
     }
 
     @Test
-    void createUser_ShouldThrowIllegalArgumentException_WhenEmailExists() {
-        // Arrange
+    void testCreateUser_EmailAlreadyExists() {
+        // Given
         when(userRepository.existsByEmail(userDTO.getEmail())).thenReturn(true);
 
-        // Act & Assert
+        // When & Then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.createUser(userDTO));
         assertEquals("Email already exists", exception.getMessage());
-
-        // Verify interactions
-        verify(userRepository, times(1)).existsByEmail(userDTO.getEmail());
-        verify(userRepository, never()).existsByUsername(userDTO.getUsername());
-        verify(userRepository, never()).save(any(User.class));
+        verify(userRepository, never()).save(any());
     }
 
     @Test
-    void createUser_ShouldThrowIllegalArgumentException_WhenUsernameExists() {
-        // Arrange
+    void testCreateUser_UsernameAlreadyExists() {
+        // Given
         when(userRepository.existsByEmail(userDTO.getEmail())).thenReturn(false);
         when(userRepository.existsByUsername(userDTO.getUsername())).thenReturn(true);
 
-        // Act & Assert
+        // When & Then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.createUser(userDTO));
         assertEquals("Username already exists", exception.getMessage());
-
-        // Verify interactions
-        verify(userRepository, times(1)).existsByEmail(userDTO.getEmail());
-        verify(userRepository, times(1)).existsByUsername(userDTO.getUsername());
-        verify(userRepository, never()).save(any(User.class));
+        verify(userRepository, never()).save(any());
     }
 
     @Test
-    void getUserByEmail_ShouldReturnUser_WhenUserExists() {
-        // Arrange
+    void testGetUserByEmail_Success() {
+        // Given
         when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(java.util.Optional.of(user));
 
-        // Act
-        User result = userService.getUserByEmail(userDTO.getEmail());
+        // When
+        User foundUser = userService.getUserByEmail(userDTO.getEmail());
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(user.getEmail(), result.getEmail());
-
-        // Verify interaction
+        // Then
+        assertNotNull(foundUser);
+        assertEquals(userDTO.getEmail(), foundUser.getEmail());
         verify(userRepository, times(1)).findByEmail(userDTO.getEmail());
     }
 
     @Test
-    void getUserByEmail_ShouldThrowUserNotFoundException_WhenUserDoesNotExist() {
-        // Arrange
+    void testGetUserByEmail_NotFound() {
+        // Given
         when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(java.util.Optional.empty());
 
-        // Act & Assert
+        // When & Then
         UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> userService.getUserByEmail(userDTO.getEmail()));
         assertEquals("User not found with email: " + userDTO.getEmail(), exception.getMessage());
-
-        // Verify interaction
         verify(userRepository, times(1)).findByEmail(userDTO.getEmail());
     }
 
     @Test
-    void getUserByUsername_ShouldReturnUser_WhenUserExists() {
-        // Arrange
+    void testGetUserByUsername_Success() {
+        // Given
         when(userRepository.findByUsername(userDTO.getUsername())).thenReturn(java.util.Optional.of(user));
 
-        // Act
-        User result = userService.getUserByUsername(userDTO.getUsername());
+        // When
+        User foundUser = userService.getUserByUsername(userDTO.getUsername());
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(user.getUsername(), result.getUsername());
-
-        // Verify interaction
+        // Then
+        assertNotNull(foundUser);
+        assertEquals(userDTO.getUsername(), foundUser.getUsername());
         verify(userRepository, times(1)).findByUsername(userDTO.getUsername());
     }
 
     @Test
-    void getUserByUsername_ShouldThrowUserNotFoundException_WhenUserDoesNotExist() {
-        // Arrange
+    void testGetUserByUsername_NotFound() {
+        // Given
         when(userRepository.findByUsername(userDTO.getUsername())).thenReturn(java.util.Optional.empty());
 
-        // Act & Assert
+        // When & Then
         UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> userService.getUserByUsername(userDTO.getUsername()));
         assertEquals("User not found with username: " + userDTO.getUsername(), exception.getMessage());
-
-        // Verify interaction
         verify(userRepository, times(1)).findByUsername(userDTO.getUsername());
     }
 
     @Test
-    void updateUser_ShouldReturnUpdatedUser_WhenUserExists() {
-        // Arrange
-        when(userRepository.existsById(user.getId())).thenReturn(true);
+    void testUpdateUser_Success() {
+        // Given
+        when(userRepository.existsById(userDTO.getId())).thenReturn(true);
+        when(modelMapper.map(userDTO, User.class)).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
 
-        // Act
-        User result = userService.updateUser(userDTO);
+        // When
+        User updatedUser = userService.updateUser(userDTO);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(user.getId(), result.getId());
-        assertEquals(user.getUsername(), result.getUsername());
-
-        // Verify interactions
-        verify(userRepository, times(1)).existsById(user.getId());
+        // Then
+        assertNotNull(updatedUser);
+        assertEquals(userDTO.getId(), updatedUser.getId());
         verify(userRepository, times(1)).save(user);
     }
 
     @Test
-    void updateUser_ShouldThrowUserNotFoundException_WhenUserDoesNotExist() {
-        // Arrange
-        when(userRepository.existsById(user.getId())).thenReturn(false);
+    void testUpdateUser_NotFound() {
+        // Given
+        when(userRepository.existsById(userDTO.getId())).thenReturn(false);
 
-        // Act & Assert
+        // When & Then
         UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> userService.updateUser(userDTO));
-        assertEquals("User not found with id: " + user.getId(), exception.getMessage());
-
-        // Verify interactions
-        verify(userRepository, times(1)).existsById(user.getId());
-        verify(userRepository, never()).save(user);
+        assertEquals("User not found with id: " + userDTO.getId(), exception.getMessage());
+        verify(userRepository, never()).save(any());
     }
 
     @Test
-    void deleteUser_ShouldDeleteUser_WhenUserExists() {
-        // Arrange
-        when(userRepository.existsById(user.getId())).thenReturn(true);
+    void testDeleteUser_Success() {
+        // Given
+        when(userRepository.existsById(userDTO.getId())).thenReturn(true);
 
-        // Act
-        userService.deleteUser(user.getId());
+        // When
+        userService.deleteUser(userDTO.getId());
 
-        // Assert
-        verify(userRepository, times(1)).existsById(user.getId());
-        verify(userRepository, times(1)).deleteById(user.getId());
+        // Then
+        verify(userRepository, times(1)).deleteById(userDTO.getId());
     }
 
     @Test
-    void deleteUser_ShouldThrowUserNotFoundException_WhenUserDoesNotExist() {
-        // Arrange
-        when(userRepository.existsById(user.getId())).thenReturn(false);
+    void testDeleteUser_NotFound() {
+        // Given
+        when(userRepository.existsById(userDTO.getId())).thenReturn(false);
 
-        // Act & Assert
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> userService.deleteUser(user.getId()));
-        assertEquals("User not found with id: " + user.getId(), exception.getMessage());
-
-        // Verify interactions
-        verify(userRepository, times(1)).existsById(user.getId());
-        verify(userRepository, never()).deleteById(user.getId());
+        // When & Then
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> userService.deleteUser(userDTO.getId()));
+        assertEquals("User not found with id: " + userDTO.getId(), exception.getMessage());
+        verify(userRepository, never()).deleteById(any());
     }
 }

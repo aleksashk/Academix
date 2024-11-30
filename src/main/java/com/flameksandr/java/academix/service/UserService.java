@@ -34,20 +34,19 @@ public class UserService {
      * @throws IllegalArgumentException Если email или username уже существуют в базе.
      */
     public User createUser(@Valid UserDTO userDTO) {
-        // Преобразуем DTO в сущность User
-        User user = modelMapper.map(userDTO, User.class);
-
         // Проверка на уникальность email
-        if (userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
 
         // Проверка на уникальность username
-        if (userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new IllegalArgumentException("Username already exists");
         }
 
-        log.info("Mapped user with role: {}", user.getRole());
+        // Преобразуем DTO в сущность User
+        User user = modelMapper.map(userDTO, User.class);
+
         // Если все проверки прошли, сохраняем пользователя
         return userRepository.save(user);
     }
@@ -84,12 +83,12 @@ public class UserService {
      * @throws UserNotFoundException Если пользователь не найден.
      */
     public User updateUser(@Valid UserDTO userDTO) {
+        if (!userRepository.existsById(userDTO.getId())) {
+            throw new UserNotFoundException("User not found with id: " + userDTO.getId());
+        }
+
         // Преобразуем DTO в сущность User
         User user = modelMapper.map(userDTO, User.class);
-
-        if (!userRepository.existsById(user.getId())) {
-            throw new UserNotFoundException("User not found with id: " + user.getId());
-        }
 
         return userRepository.save(user);
     }
