@@ -45,15 +45,5 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     LocalDateTime updatedAt;
-
-    public User(String username, String email, String password, String fullName, Role role) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.fullName = fullName;
-        this.role = role;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
 }
 
